@@ -7,6 +7,7 @@ import 'package:itrip/core/widgets/app_error_view.dart';
 import 'package:itrip/core/widgets/app_loading.dart';
 import 'package:itrip/core/widgets/travel_card.dart';
 import 'package:itrip/data/repositories/travel_repository.dart';
+import 'package:itrip/data/services/location_service.dart';
 import 'package:itrip/domain/entities/place_entity.dart';
 
 final nearbyPlacesProvider = FutureProvider<List<PlaceEntity>>((ref) async {
@@ -33,11 +34,16 @@ class _NearbyScreenState extends ConsumerState<NearbyScreen> {
   @override
   Widget build(BuildContext context) {
     final placesAsync = ref.watch(nearbyPlacesProvider);
+    final positionAsync = ref.watch(currentPositionProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Discover Nearby'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.my_location),
+            onPressed: () => ref.invalidate(currentPositionProvider),
+          ),
           IconButton(
             icon: const Icon(Icons.filter_list),
             onPressed: _showFilters,
@@ -46,6 +52,28 @@ class _NearbyScreenState extends ConsumerState<NearbyScreen> {
       ),
       body: Column(
         children: [
+          positionAsync.when(
+            loading: () => const LinearProgressIndicator(minHeight: 2),
+            error: (_, __) => const SizedBox.shrink(),
+            data: (pos) => Material(
+              color: AppColors.primary.withValues(alpha: 0.08),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Row(
+                  children: [
+                    const Icon(Icons.location_on, size: 16, color: AppColors.primary),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Near ${pos.lat.toStringAsFixed(2)}, ${pos.lng.toStringAsFixed(2)}',
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
           SizedBox(
             height: 44,
             child: ListView(

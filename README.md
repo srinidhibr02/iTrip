@@ -77,7 +77,12 @@ lib/
 2. **Environment variables**
    ```bash
    cp .env.example .env
-   # Add your API keys
+   # Add your API keys to .env
+   ```
+
+   **Android Maps key** — add to `android/local.properties`:
+   ```
+   GOOGLE_MAPS_API_KEY=your_key_here
    ```
 
 3. **Firebase**
