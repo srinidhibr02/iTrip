@@ -7,11 +7,13 @@ import 'package:itrip/core/widgets/app_empty_view.dart';
 import 'package:itrip/core/widgets/app_error_view.dart';
 import 'package:itrip/core/utils/result.dart';
 import 'package:itrip/core/widgets/app_loading.dart';
+import 'package:itrip/core/providers/user_id_provider.dart';
 import 'package:itrip/data/repositories/travel_repository.dart';
 import 'package:itrip/domain/entities/trip_entity.dart';
 
 final tripsProvider = FutureProvider<List<TripEntity>>((ref) async {
-  final result = await ref.read(travelRepositoryProvider).getTrips('demo_user');
+  final userId = ref.watch(currentUserIdProvider);
+  final result = await ref.read(travelRepositoryProvider).getTrips(userId);
   return result.when(
     success: (data) => data,
     error: (_) => throw Exception('Failed to load trips'),
@@ -54,7 +56,10 @@ class TripPlannerScreen extends ConsumerWidget {
           return ListView.builder(
             padding: const EdgeInsets.all(16),
             itemCount: trips.length,
-            itemBuilder: (_, i) => _TripCard(trip: trips[i]),
+            itemBuilder: (_, i) => _TripCard(
+              trip: trips[i],
+              onTap: () => context.push('/trip/${trips[i].id}'),
+            ),
           );
         },
       ),
@@ -68,15 +73,19 @@ class TripPlannerScreen extends ConsumerWidget {
 }
 
 class _TripCard extends StatelessWidget {
-  const _TripCard({required this.trip});
+  const _TripCard({required this.trip, required this.onTap});
 
   final TripEntity trip;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,6 +151,7 @@ class _TripCard extends StatelessWidget {
             ],
           ],
         ),
+      ),
       ),
     );
   }

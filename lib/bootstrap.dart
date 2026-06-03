@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:itrip/app.dart';
 import 'package:itrip/core/constants/app_constants.dart';
+import 'package:itrip/data/services/notification_service.dart';
 
 /// App initialization — Firebase, Hive, env, error handling.
 Future<void> bootstrap() async {
@@ -50,6 +52,13 @@ Future<void> bootstrap() async {
   await Hive.openBox(AppConstants.tripsBox);
   await Hive.openBox(AppConstants.routesBox);
   await Hive.openBox(AppConstants.settingsBox);
+
+  // Push notifications (non-blocking)
+  try {
+    await NotificationService(FirebaseMessaging.instance).initialize();
+  } catch (e) {
+    debugPrint('Notifications init skipped: $e');
+  }
 
   runApp(
     const ProviderScope(

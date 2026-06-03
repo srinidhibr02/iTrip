@@ -4,6 +4,7 @@ import 'package:itrip/core/constants/app_constants.dart';
 import 'package:itrip/core/providers/theme_provider.dart';
 import 'package:itrip/core/router/app_router.dart';
 import 'package:itrip/core/theme/app_theme.dart';
+import 'package:itrip/core/widgets/offline_banner.dart';
 
 /// Root application widget.
 class ITripApp extends ConsumerWidget {
@@ -21,6 +22,7 @@ class ITripApp extends ConsumerWidget {
       darkTheme: AppTheme.dark,
       themeMode: themeMode,
       routerConfig: router,
+      builder: (context, child) => OfflineBanner(child: child ?? const SizedBox.shrink()),
     );
   }
 }

@@ -17,18 +17,32 @@ class SettingsScreen extends ConsumerWidget {
             title: Text('Appearance'),
             subtitle: Text('Theme'),
           ),
-          ...ThemeMode.values.map((mode) {
-            return RadioListTile<ThemeMode>(
-              title: Text(_themeLabel(mode)),
-              value: mode,
-              groupValue: themeMode,
-              onChanged: (v) {
-                if (v != null) {
-                  ref.read(themeModeProvider.notifier).setThemeMode(v);
-                }
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: SegmentedButton<ThemeMode>(
+              segments: const [
+                ButtonSegment(
+                  value: ThemeMode.system,
+                  label: Text('System'),
+                  icon: Icon(Icons.brightness_auto, size: 18),
+                ),
+                ButtonSegment(
+                  value: ThemeMode.light,
+                  label: Text('Light'),
+                  icon: Icon(Icons.light_mode, size: 18),
+                ),
+                ButtonSegment(
+                  value: ThemeMode.dark,
+                  label: Text('Dark'),
+                  icon: Icon(Icons.dark_mode, size: 18),
+                ),
+              ],
+              selected: {themeMode},
+              onSelectionChanged: (modes) {
+                ref.read(themeModeProvider.notifier).setThemeMode(modes.first);
               },
-            );
-          }),
+            ),
+          ),
           const Divider(),
           SwitchListTile(
             title: const Text('Push Notifications'),
@@ -69,10 +83,4 @@ class SettingsScreen extends ConsumerWidget {
       ),
     );
   }
-
-  String _themeLabel(ThemeMode mode) => switch (mode) {
-        ThemeMode.system => 'System default',
-        ThemeMode.light => 'Light',
-        ThemeMode.dark => 'Dark',
-      };
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:itrip/core/theme/app_colors.dart';
 import 'package:itrip/core/utils/result.dart';
 import 'package:itrip/core/widgets/app_empty_view.dart';
@@ -153,7 +154,7 @@ class _NearbyScreenState extends ConsumerState<NearbyScreen> {
                             ? '${place.distanceKm!.toStringAsFixed(1)} km • ${place.travelTimeMinutes ?? 0} min'
                             : null,
                         badge: _categoryLabel(place.category),
-                        onTap: () {},
+                        onTap: () => context.push('/place/${place.id}'),
                       ),
                     );
                   },

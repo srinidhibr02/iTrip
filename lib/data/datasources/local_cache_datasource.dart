@@ -14,6 +14,11 @@ class LocalCacheDataSource {
     await _tripsBox.put('cached_at', DateTime.now().toIso8601String());
   }
 
+  Future<void> appendTrip(Map<String, dynamic> trip) async {
+    final existing = getCachedTrips() ?? [];
+    await cacheTrips([trip, ...existing]);
+  }
+
   List<Map<String, dynamic>>? getCachedTrips() {
     final data = _tripsBox.get('cached_trips');
     if (data is List) {
