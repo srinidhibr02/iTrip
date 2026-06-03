@@ -23,7 +23,9 @@ import 'package:itrip/features/profile/presentation/screens/profile_screen.dart'
 import 'package:itrip/features/routes/presentation/screens/routes_screen.dart';
 import 'package:itrip/features/settings/presentation/screens/settings_screen.dart';
 import 'package:itrip/features/splash/presentation/screens/splash_screen.dart';
+import 'package:itrip/features/nearby/presentation/screens/place_detail_screen.dart';
 import 'package:itrip/features/trip_planner/presentation/screens/create_trip_screen.dart';
+import 'package:itrip/features/trip_planner/presentation/screens/trip_detail_screen.dart';
 import 'package:itrip/features/trip_planner/presentation/screens/trip_planner_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -123,6 +125,18 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RoutePaths.createTrip,
         builder: (_, __) => const CreateTripScreen(),
+      ),
+      GoRoute(
+        path: '/trip/:id',
+        builder: (_, state) => TripDetailScreen(
+          tripId: state.pathParameters['id']!,
+        ),
+      ),
+      GoRoute(
+        path: '/place/:id',
+        builder: (_, state) => PlaceDetailScreen(
+          placeId: state.pathParameters['id']!,
+        ),
       ),
       GoRoute(
         path: RoutePaths.map,
